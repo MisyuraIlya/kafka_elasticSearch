@@ -6,23 +6,35 @@ export class CatalogService {
     constructor(
         private repository: ICatalogRepository
     ){}
-    createProudct(input: any){
-
+    async createProudct(input: any){
+        const data = await this.repository.create(input)
+        if(!data.id){
+            throw new Error('unable to create product')
+        }
+        return data
     }
 
-    updateProduct(input: any){
-
+    async updateProduct(input: any){
+        const data = await this.repository.update(input)
+        //emit even to update record in elastic search
+        return data;
     }
 
-    getProducts(limit: number, offset:number){
-
+    //instead if this we will get product from elastic search
+    async getProducts(limit: number, offset:number){
+        const products = await this.repository.find(limit,offset)
+        return products
     }
 
-    getProduct(id: number){
-
+    async getProduct(id: number){
+        const product = await this.repository.findOne(id)
+        return product
     }
 
-    deleteProduct(id: number) {
+    async deleteProduct(id: number) {
+        const response = await this.repository.delete(id)
+        //delete record from elastic search
 
+        return response
     }
 }
