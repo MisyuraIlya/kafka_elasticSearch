@@ -3,14 +3,10 @@ import { ICatalogRepository } from "../../interface/catalogRepository.interface"
 import { MockCatalogRepository } from "../../repository/mockCatalog.repository"
 import { CatalogService } from "../catalog.service"
 import { Product } from "../../models/product.model"
-import { Factory } from "rosie"
+import { productFactory } from "../../utils/fixtures"
 
-const productFactory = new Factory<Product>()
-.attr('id', faker.number.int({min:1, max:1000}))
-.attr('name',faker.commerce.productName())
-.attr('description', faker.commerce.productDescription())
-.attr('stock',faker.number.int({min: 10, max:100}))
-.attr('price',+faker.commerce.price())
+
+
 
 const mockProduct = (rest:any) => {
     return {
@@ -43,7 +39,7 @@ describe('catalogService', () => {
             const reqBody = mockProduct({
                 price:+faker.commerce.price,
             })
-            const result = await service.createProudct(reqBody)
+            const result = await service.createProduct(reqBody)
             expect(result).toMatchObject({
                 id:expect.any(Number),
                 name:expect.any(String),
@@ -61,7 +57,7 @@ describe('catalogService', () => {
             jest
             .spyOn(repository, 'create')
             .mockImplementationOnce(() => Promise.resolve({} as Product))
-            await expect(service.createProudct(reqBody)).rejects.toThrow("unable to create product")
+            await expect(service.createProduct(reqBody)).rejects.toThrow("unable to create product")
         })
 
         test('should throw error with product already exist', async () => {
@@ -72,7 +68,7 @@ describe('catalogService', () => {
             jest
             .spyOn(repository, 'create')
             .mockImplementationOnce(() => Promise.reject(new Error("product already exist")))
-            await expect(service.createProudct(reqBody)).rejects.toThrow("product already exist")
+            await expect(service.createProduct(reqBody)).rejects.toThrow("product already exist")
         })
     })
 

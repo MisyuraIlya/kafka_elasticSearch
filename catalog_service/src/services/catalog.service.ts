@@ -6,7 +6,7 @@ export class CatalogService {
     constructor(
         private repository: ICatalogRepository
     ){}
-    async createProudct(input: any){
+    async createProduct(input: any){
         const data = await this.repository.create(input)
         if(!data.id){
             throw new Error('unable to create product')
@@ -14,11 +14,14 @@ export class CatalogService {
         return data
     }
 
-    async updateProduct(input: any){
-        const data = await this.repository.update(input)
-        //emit even to update record in elastic search
+    async updateProduct(input: any) {
+        const data = await this.repository.update(input);
+        if (!data.id) {
+          throw new Error("unable to update product");
+        }
+        // emit event to update record in Elastic search
         return data;
-    }
+      }
 
     //instead if this we will get product from elastic search
     async getProducts(limit: number, offset:number){
